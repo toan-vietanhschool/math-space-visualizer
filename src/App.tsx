@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { MathScene } from './components/MathScene';
+import { explainFormula } from './lib/formula-info';
 import { Globe, Info, Layers, Play, Settings2, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -8,6 +9,7 @@ function App() {
   const [inputFormula, setInputFormula] = useState(formula);
   const [range, setRange] = useState(10);
   const [isPanelVisible, setIsPanelVisible] = useState(true);
+  const info = useMemo(() => explainFormula(formula), [formula]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,8 +128,29 @@ function App() {
             </div>
           </motion.div>
         </div>
+
+        <motion.div
+          className="info-panel glass-panel pointer-auto"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="badge">GIẢI THÍCH CÔNG THỨC</div>
+          <h3>{info.title}</h3>
+          <p className="info-summary">{info.summary}</p>
+          <div className="info-tags">
+            {info.tags.map((t) => (
+              <span key={t} className="tag">{t}</span>
+            ))}
+          </div>
+          <ul className="info-details">
+            {info.details.map((d, i) => (
+              <li key={i}>{d}</li>
+            ))}
+          </ul>
+        </motion.div>
       </div>
-      
+
       <button 
         className="glass-panel pointer-auto" 
         style={{ 
